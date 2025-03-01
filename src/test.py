@@ -1,33 +1,11 @@
-from artificer import Artificer, Artifact, Rule
+from artificer import Artificer, Artifact, SimpleRule, Pattern
 
-class A(Rule):
-    def __init__(self):
-        super().__init__([], ['A'])
+a = SimpleRule('', 'A', lambda x: [*x, 'A'])
+b = SimpleRule('', 'B', lambda x: [*x, 'B'])
+c = SimpleRule('A,B', 'C', lambda x: [*x, 'C'])
 
-    def apply(self, artifacts):
-        for artifact in artifacts:
-            artifact.tags.add('A')
-
-class B(Rule):
-    def __init__(self):
-        super().__init__([], ['B'])
-
-    def apply(self, artifacts):
-        for artifact in artifacts:
-            artifact.tags.add('B')
-
-class C(Rule):
-    def __init__(self):
-        super().__init__(['A', 'B'], ['C'])
-
-    def apply(self, artifacts):
-        for artifact in artifacts:
-            artifact.tags.add('C')
-
-artificer = Artificer([A(), B(), C()])
-
-artifacts = [Artifact({}, ['C'])]
-
+artificer = Artificer([a, b, c])
+artifacts = [Artifact([])]
 artificer.build(artifacts)
 
 print(artifacts)
