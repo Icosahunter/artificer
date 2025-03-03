@@ -1,8 +1,8 @@
-from artificer import Artificer, Artifact, SimpleRule, Pattern
+from artificer import Artificer, Artifact, SimpleRule
 
-a = SimpleRule('', 'A', lambda x: [*x, 'A'])
-b = SimpleRule('', 'B', lambda x: [*x, 'B'])
-c = SimpleRule('A,B', 'C', lambda x: [*x, 'C'])
+a = SimpleRule('', 'std:A', lambda x: [*x, 'std:A'])
+b = SimpleRule('', 'std:B', lambda x: [*x, 'std:B'])
+c = SimpleRule('std:A,std:B', 'std:C', lambda x: [*x, 'std:C'])
 
 artificer = Artificer([a, b, c])
 artifacts = [Artifact([])]
