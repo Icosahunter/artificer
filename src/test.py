@@ -1,8 +1,19 @@
-from artificer import Artificer, Artifact, SimpleRule
+from artificer import Artificer, Artifact, rule, filter
 
-a = SimpleRule('', 'std:A', lambda x: [*x, 'std:A'])
-b = SimpleRule('', 'std:B', lambda x: [*x, 'std:B'])
-c = SimpleRule('std:A,std:B', 'std:C', lambda x: [*x, 'std:C'])
+@rule([], ['A'])
+def a(artifacts):
+    for artifact in artifacts:
+        artifact.add_tag('A')
+
+@rule([], ['B'])
+def b(artifacts):
+    for artifact in artifacts:
+        artifact.add_tag('B')
+
+@rule(['A', 'B'], ['C'])
+def c(artifacts):
+    for artifact in filter(artifacts, ['A', 'B']):
+        artifact.add_tag('C')
 
 artificer = Artificer([a, b, c])
 artifacts = [Artifact([])]
