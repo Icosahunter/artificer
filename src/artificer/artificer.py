@@ -36,6 +36,14 @@ class Artifact:
         tags = ', '.join(tags)
         return f'<{type(self).__name__} obj:{self.obj.__repr__()} tags:{{{tags}}}>'
 
+    def add_tag(self, tag):
+        self.tags.update(_resolve_tag(tag))
+
+    def remove_tag(self, tag):
+        tags_to_rmv = [x for x in self.tags if x.startswith(tag)]
+        for x in tags_to_rmv:
+            self.tags.remove(x)
+
     def _set_type_tags(self):
         self.tags.add(f'py:{type(self.obj).__name__}')
         if isinstance(self.obj, Mapping):
@@ -86,12 +94,14 @@ class Rule:
         self.src_tags = set(src_tags)
         self.tar_tags = set(tar_tags)
 
+    def __repr__(self):
+        return f'<Rule {self.func.__name__}>'
+
     def depends_on(self, other_rule):
         return self.src_tags & other_rule.tar_tags
 
     def __call__(self, artificer):
         filtered_artifacts = artificer.filter(self.src_tags)
-
         for artifact in filtered_artifacts:
             result = self.func(artifact)
             if result is not None:
@@ -111,7 +121,7 @@ class Artificer:
     def __init__(self, rules = [], artifacts = []):
         self.rules = rules
         self.artifacts = artifacts
-        self.build_steps
+        self.build_steps = None
 
     def filter(self, tags):
         tags = set(tags)
@@ -119,6 +129,8 @@ class Artificer:
 
     def build(self):
         self._build_dep_graph()
+        for step in self.build_steps:
+            step(self)
 
     def _build_dep_graph(self):
         self.dep_graph = {}

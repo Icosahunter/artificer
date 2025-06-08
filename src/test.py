@@ -1,22 +1,18 @@
-from artificer import Artificer, Artifact, rule, filter
+from artificer import Artificer, Artifact, rule
 
 @rule([], ['A'])
-def a(artifacts):
-    for artifact in artifacts:
-        artifact.add_tag('A')
+def a(artifact):
+    artifact.add_tag('A')
 
 @rule([], ['B'])
-def b(artifacts):
-    for artifact in artifacts:
-        artifact.add_tag('B')
+def b(artifact):
+    artifact.add_tag('B')
 
 @rule(['A', 'B'], ['C'])
-def c(artifacts):
-    for artifact in filter(artifacts, ['A', 'B']):
-        artifact.add_tag('C')
+def c(artifact):
+    artifact.add_tag('C')
 
-artificer = Artificer([a, b, c])
-artifacts = [Artifact([])]
-artificer.build(artifacts)
+artificer = Artificer([a, b, c], [Artifact([])])
+artificer.build()
 
-print(artifacts)
+print(artificer.artifacts)
